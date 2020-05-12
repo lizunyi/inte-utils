@@ -4,11 +4,14 @@
   */
 package com.weaver.inte.utils;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * date: 2018年6月18日 下午4:14:25<br/>
@@ -38,24 +41,10 @@ public class ReadWriteUtil {
 		return os.toString("UTF-8");
 	}
 
-	/**
-	 * 根据文件读取内容
-	 * 
-	 * @param file
-	 * @return
-	 * @throws Exception
-	 */
 	public static final String read(File file) throws Exception {
 		return read(new FileInputStream(file));
 	}
 
-	/**
-	 * 根据文件名称读取内容
-	 * 
-	 * @param fileName
-	 * @return
-	 * @throws Exception
-	 */
 	public static final String read(String fileName) throws Exception {
 		if (fileName == null || fileName.trim().equals("")) {
 			return "";
@@ -70,21 +59,40 @@ public class ReadWriteUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static final void write(File file, String fileContent,boolean isAppend) throws Exception {
+	public static final void write(File file, byte[] bytes,boolean isAppend) throws Exception {
 		File parentFile = file.getParentFile();
 		if (!parentFile.exists()) {
 			parentFile.mkdirs();
 		}
 		FileOutputStream fos = new FileOutputStream(file, isAppend);
-		byte[] bytes = fileContent.getBytes("UTF-8");
-		fos.write(bytes, 0, bytes.length);
+		InputStream in = new ByteArrayInputStream(bytes);
+		byte[] bys = new byte[4096];
+		int len = -1;
+		while((len = in.read(bys))!= -1){
+			fos.write(bys, 0, len);
+		}
 		fos.close();
+		in.close();
 	}
-
-	public static final void write(String filePath, String fileContent,boolean isAppend) throws Exception {
-		write(new File(filePath), fileContent, isAppend);
+	
+	public static final void write(File file, String fileContent) throws Exception {
+		write(file, fileContent.getBytes("UTF-8"), false);
+	}
+	public static final void write(File file, byte[] bytes) throws Exception {
+		write(file, bytes, false);
 	}
 	public static final void write(String filePath, String fileContent) throws Exception {
-		write(new File(filePath), fileContent, false);
+		write(new File(filePath), fileContent.getBytes("UTF-8"), false);
+	}
+	public static final void write(String filePath, byte[] bytes) throws Exception {
+		write(new File(filePath), bytes, false);
+	}
+	
+	
+	public static final void write(File file, String fileContent,boolean isAppend) throws Exception {
+		write(file, fileContent.getBytes("UTF-8"), isAppend);
+	}
+	public static final void write(String filePath, String fileContent,boolean isAppend) throws Exception {
+		write(new File(filePath), fileContent.getBytes("UTF-8"), isAppend);
 	}
 }
