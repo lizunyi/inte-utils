@@ -22,7 +22,7 @@ public class DateUtils {
   		
   		return String.format("%s:%s:%s", hh,mm,ss);
 	}
-
+	
 	public static final String getTime2(Date d) {
   		long timers = d.getTime() / 1000 % 86400;
 		long ss = timers % 60;//秒
@@ -31,18 +31,25 @@ public class DateUtils {
   		
   		return String.format("%s:%s:%s", hh,mm,ss);
 	}
+	
+	public static final Date getNowDate(){
+		return new Date(System.currentTimeMillis() / 86400000 * 86400000 - 28800000);
+	}
 
+	public static final String formatNowDate(){
+		Date d = getNowDate();
+  		return format(d,"yyyy-MM-dd");
+	}
+	
 	public static final String format(Date d,String pattern) {
   		local.set(new SimpleDateFormat(pattern));
-  		SimpleDateFormat format = local.get();
-  		return format.format(d);
+  		return local.get().format(d);
 	}
 	
 	public static final Date parse(String d,String pattern) {
-  		local.set(new SimpleDateFormat(pattern));
-  		SimpleDateFormat format = local.get();
   		try {
-			return format.parse(d);
+  			local.set(new SimpleDateFormat(pattern));
+			return local.get().parse(d);
 		} catch (ParseException e) {
 			
 		} 

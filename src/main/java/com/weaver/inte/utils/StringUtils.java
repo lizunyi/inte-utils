@@ -73,4 +73,8 @@ public class StringUtils {
 	public static boolean isNotNull(Object obj) {
 		return !isNull(obj);
 	}
+
+	public static boolean isEmpty(Object str) {
+		return (str == null || "".equals(str));
+	}
 }
