@@ -184,33 +184,35 @@ public class StringUtils {
 	 * XML->String
 	 */
 	public static void main(String[] args) throws Exception {
-		String xml = ReadWriteUtil.read("D://hotel-info.xml");
-//		Pattern pat = Pattern.compile("<PhoneNo[^>]*(?=phoneType=\"InternalMobileTel\")[^>]*>([\\s\\S]*?)</PhoneNo>");
-//		Matcher mac = pat.matcher(xml);
-//		while (mac.find()) {
-//			System.out.println(mac.group(0));
-//		}
+		String xml = ReadWriteUtil.read("D://new.xml");
+		Pattern pat = Pattern.compile("<PhoneNo[^>]*(?=phoneType=\"NationalFree\")[^>]*>(((?!</PhoneNo>)[\\s\\S])*)</PhoneNo>");
+		Matcher mac = pat.matcher(xml);
+		while (mac.find()) {
+			System.out.println("---");
+			System.out.println(mac.group(1));
+		}
 		//取对象
-		System.out.println(getStringByTag(xml,"ReqHotel"));
-		//取值
-		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelCode"));
-		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelName"));
-		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelAddress"));
-		//多个标签取数组
-		getArrayByTags(xml, new CharacterHandler() {
-			@Override
-			public void exec(String str) {
-				System.out.println(str);
-				System.out.println(getStringByTag(str,"AutoBus"));
-			}
-		},"ReqHotel", "HotelTrafic", "TfcItem");
-		//多个标签取 + 属性过滤 取数组
-		getArrayByTagsFilterAttribute(xml, new CharacterHandler() {
-			@Override
-			public void exec(String str) {
-				System.out.println(str);
-			}
-		},"phoneType=\"InternalMobileTel\"","HotelBaseInfo", "ContactPhone", "PhoneNo");
+//		System.out.println(getStringByTag(xml,"ReqHotel"));
+//		//取值
+//		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelCode"));
+//		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelName"));
+//		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelAddress"));
+//		//多个标签取数组
+//		getArrayByTags(xml, new CharacterHandler() {
+//			@Override
+//			public void exec(String str) {
+//				System.out.println(str);
+//				System.out.println(getStringByTag(str,"Destination"));
+//			}
+//		},"ReqHotel", "HotelTrafic", "TfcItem");
+//		//多个标签取 + 属性过滤 取数组
+//		getArrayByTagsFilterAttribute(xml, new CharacterHandler() {
+//			@Override
+//			public void exec(String str) {
+//				System.out.println("---");
+//				System.out.println(str);
+//			}
+//		},"phoneType=\"NationalFree\"","HotelBaseInfo", "ContactPhone", "PhoneNo");
 	}
 
 	public static String getStringByTags(String xml,String ... tag) {
@@ -272,11 +274,11 @@ public class StringUtils {
 	}
 
 	private static Pattern singleNoNestingKey(String tag) {
-		return Pattern.compile(String.format("<%s>([\\s\\S]*?)</%s>", tag, tag, tag));
+		return Pattern.compile(String.format("<%s>(((?!<%s>)[\\s\\S])*)</%s>", tag, tag, tag));
 	}
 
 	private static Pattern singleNoNestingKey(String attribute,String tag) {
-		return Pattern.compile(String.format("<%s[^>]*(?=%s)[^>]*>([\\s\\S]*?)</%s>", tag, attribute, tag));
+		return Pattern.compile(String.format("<%s[^>]*(?=%s)[^>]*>(((?!</%s>)[\\s\\S])*)</%s>", tag, attribute, tag, tag));
 	}
 
 	private static Pattern singleKey(String tag) {
