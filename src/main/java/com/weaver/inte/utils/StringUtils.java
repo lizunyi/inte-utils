@@ -185,12 +185,13 @@ public class StringUtils {
 	 */
 	public static void main(String[] args) throws Exception {
 		String xml = ReadWriteUtil.read("D://new.xml");
-		Pattern pat = Pattern.compile("<PhoneNo[^>]*(?=phoneType=\"NationalFree\")[^>]*>(((?!</PhoneNo>)[\\s\\S])*)</PhoneNo>");
-		Matcher mac = pat.matcher(xml);
-		while (mac.find()) {
-			System.out.println("---");
-			System.out.println(mac.group(1));
-		}
+		System.out.println(getAttributeByTag(xml,"ReqType","roomTypeDescript"));
+//		Pattern pat = Pattern.compile("<PhoneNo[^>]*(?=phoneType=\"NationalFree\")[^>]*>(((?!</PhoneNo>)[\\s\\S])*)</PhoneNo>");
+//		Matcher mac = pat.matcher(xml);
+//		while (mac.find()) {
+//			System.out.println("---");
+//			System.out.println(mac.group(1));
+//		}
 		//取对象
 //		System.out.println(getStringByTag(xml,"ReqHotel"));
 //		//取值
@@ -244,6 +245,14 @@ public class StringUtils {
 		}
 	}
 
+	public static String getAttributeByTag(String xml,String tag,String attribute) {
+		Matcher mac = singleKeyByAttribute(tag, attribute).matcher(xml);
+		if (mac.find()) {
+			return mac.group(1);
+		}
+		return empty;
+	}
+
 	public static void getArrayByTagsFilterAttribute(String xml,CharacterHandler handler,String attribute,String ... tag) {
 		String[] newTag = null;
 		if (tag.length == 1) {
@@ -274,7 +283,7 @@ public class StringUtils {
 	}
 
 	private static Pattern singleNoNestingKey(String tag) {
-		return Pattern.compile(String.format("<%s>(((?!<%s>)[\\s\\S])*)</%s>", tag, tag, tag));
+		return Pattern.compile(String.format("<%s[^>]*>(((?!<%s>)[\\s\\S])*)</%s>", tag, tag, tag));
 	}
 
 	private static Pattern singleNoNestingKey(String attribute,String tag) {
@@ -283,6 +292,10 @@ public class StringUtils {
 
 	private static Pattern singleKey(String tag) {
 		return Pattern.compile(String.format("<%s>([\\s\\S]*)</%s>", tag, tag));
+	}
+
+	private static Pattern singleKeyByAttribute(String tag,String attribute) {
+		return Pattern.compile(String.format("<%s[\\s\\S]*?%s=\"([\\s\\S]*?)\"[\\s\\S]*?>", tag, attribute));
 	}
 
 	private static Pattern moreKey(String ... tags) {
