@@ -4,14 +4,12 @@
   */
 package com.weaver.inte.utils;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * date: 2018年6月18日 下午4:14:25<br/>
