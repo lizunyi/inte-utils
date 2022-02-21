@@ -1,39 +1,40 @@
 package com.weaver.inte.utils;
 
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * @description
- * @author lzy
- * @date:2020年4月28日 上午10:31:48
- * @version v1.0
- */
 public class DateUtils {
-
-	private final static ThreadLocal<SimpleDateFormat> local = new ThreadLocal<SimpleDateFormat>();
+	private static final ThreadLocal<SimpleDateFormat> local = new ThreadLocal<>();
 
 	public static final String getTime(Date d) {
-		long timers = d.getTime() / 1000;
-		long ss = timers % 60;// 秒
-		long mm = timers / 60 % 60;// 分
-		long hh = timers / 3600 % 24;// 时
+		long timers = d.getTime() / 1000L;
+		long ss = timers % 60L;
+		long mm = timers / 60L % 60L;
+		long hh = timers / 3600L % 24L + 8;
+		return String.format("%s:%s:%s", zero(hh), zero(mm), zero(ss));
+	}
 
-		return String.format("%s:%s:%s", hh, mm, ss);
+	public static final long getTimeByNumber(Date d) {
+		long timers = d.getTime() / 1000L;
+		long ss = timers % 60L;
+		long mm = timers / 60L % 60L;
+		long hh = timers / 3600L % 24L + 8;
+		return Long.parseLong(String.format("%s%s%s", hh, zero(mm), zero(ss)));
 	}
 
 	public static final String getTime2(Date d) {
-		long timers = d.getTime() / 1000 % 86400;
-		long ss = timers % 60;// 秒
-		long mm = timers / 60 % 60;// 分
-		long hh = timers / 3600;// 时
-
-		return String.format("%s:%s:%s", hh, mm, ss);
+		long timers = d.getTime() / 1000L % 86400L;
+		long ss = timers % 60L;
+		long mm = timers / 60L % 60L;
+		long hh = timers / 3600L + 8;
+		return String.format("%s:%s:%s", zero(hh), zero(mm), zero(ss));
 	}
 
 	public static final Date getNowDate() {
-		return new Date(System.currentTimeMillis() / 86400000 * 86400000 - 28800000);
+		return new Date(System.currentTimeMillis() / 86400000L * 86400000L - 28800000L);
 	}
 
 	public static final String formatNowDate() {
@@ -41,27 +42,51 @@ public class DateUtils {
 		return format(d, "yyyy-MM-dd");
 	}
 
-	public static final String formatNow() {
-		return format(new Date(), "yyyy-MM-dd HH:mm:ss");
-	}
-
 	public static final String format(Date d, String pattern) {
-		if (local.get() == null) {
-			local.set(new SimpleDateFormat(pattern));
-		}
-		return local.get().format(d);
+		local.set(new SimpleDateFormat(pattern));
+		return ((SimpleDateFormat) local.get()).format(d);
 	}
 
 	public static final Date parse(String d, String pattern) {
 		try {
-			if (local.get() == null) {
-				local.set(new SimpleDateFormat(pattern));
-			}
-			return local.get().parse(d);
-		} catch (ParseException e) {
-
+			local.set(new SimpleDateFormat(pattern));
+			return ((SimpleDateFormat) local.get()).parse(d);
+		} catch (ParseException parseException) {
+			return null;
 		}
-		return null;
 	}
 
+	private static final String zero(long n) {
+		return n < 10 ? "0" + n : String.valueOf(n);
+	}
+
+	public static final Date addHour(int hour) {
+		Date d = new Date();
+		return new Date(d.getTime() + hour * 3600000);
+	}
+
+	public static final Date addMin(int min) {
+		Date d = new Date();
+		return new Date(d.getTime() + min * 60000);
+	}
+
+	/**
+	 * Methods Descrip:按指定格式转换日期字符串为日期对象,如果解析失败,返回null
+	 *
+	 * @param date:日期字符串
+	 * @param pattern:指定的日期格式
+	 * @return:Date 日期
+	 */
+	public static Date parseDate(String date, String pattern) {
+		if (date == null)
+			return null;
+
+		try {
+			DateFormat parser = new SimpleDateFormat(pattern);
+			return parser.parse(date);
+		} catch (ParseException ex) {
+		}
+
+		return null;
+	}
 }
