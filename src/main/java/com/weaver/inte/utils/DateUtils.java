@@ -1,13 +1,11 @@
 package com.weaver.inte.utils;
 
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateUtils {
-	private static final ThreadLocal<SimpleDateFormat> local = new ThreadLocal<>();
 
 	public static final String getTime(Date d) {
 		long timers = d.getTime() / 1000L;
@@ -37,56 +35,32 @@ public class DateUtils {
 		return new Date(System.currentTimeMillis() / 86400000L * 86400000L - 28800000L);
 	}
 
+
 	public static final String formatNowDate() {
 		Date d = getNowDate();
 		return format(d, "yyyy-MM-dd");
 	}
 
+	public static final String formatNow() {
+		return format(new Date(), "yyyy-MM-dd HH:mm:ss");
+	}
+
 	public static final String format(Date d, String pattern) {
-		local.set(new SimpleDateFormat(pattern));
-		return ((SimpleDateFormat) local.get()).format(d);
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		return sdf.format(d);
 	}
 
 	public static final Date parse(String d, String pattern) {
 		try {
-			local.set(new SimpleDateFormat(pattern));
-			return ((SimpleDateFormat) local.get()).parse(d);
-		} catch (ParseException parseException) {
-			return null;
+			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+			return sdf.parse(d);
+		} catch (ParseException e) {
+
 		}
+		return null;
 	}
 
 	private static final String zero(long n) {
 		return n < 10 ? "0" + n : String.valueOf(n);
-	}
-
-	public static final Date addHour(int hour) {
-		Date d = new Date();
-		return new Date(d.getTime() + hour * 3600000);
-	}
-
-	public static final Date addMin(int min) {
-		Date d = new Date();
-		return new Date(d.getTime() + min * 60000);
-	}
-
-	/**
-	 * Methods Descrip:按指定格式转换日期字符串为日期对象,如果解析失败,返回null
-	 *
-	 * @param date:日期字符串
-	 * @param pattern:指定的日期格式
-	 * @return:Date 日期
-	 */
-	public static Date parseDate(String date, String pattern) {
-		if (date == null)
-			return null;
-
-		try {
-			DateFormat parser = new SimpleDateFormat(pattern);
-			return parser.parse(date);
-		} catch (ParseException ex) {
-		}
-
-		return null;
 	}
 }
