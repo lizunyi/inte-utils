@@ -7,28 +7,20 @@ import java.util.Date;
 
 public class DateUtils {
 
+	private static final String getTime(String pattern, Date d) {
+		long timers = d.getTime() / 1000;
+		long ss = timers % 60;
+		long mm = timers / 60 % 60;
+		long hh = timers / 86400 % 24 - 8;
+		return String.format(pattern, zero(hh), zero(mm), zero(ss));
+	}
+
 	public static final String getTime(Date d) {
-		long timers = d.getTime() / 1000L;
-		long ss = timers % 60L;
-		long mm = timers / 60L % 60L;
-		long hh = timers / 3600L % 24L + 8;
-		return String.format("%s:%s:%s", zero(hh), zero(mm), zero(ss));
+		return getTime("%s:%s:%s", d);
 	}
 
 	public static final long getTimeByNumber(Date d) {
-		long timers = d.getTime() / 1000L;
-		long ss = timers % 60L;
-		long mm = timers / 60L % 60L;
-		long hh = timers / 3600L % 24L + 8;
-		return Long.parseLong(String.format("%s%s%s", hh, zero(mm), zero(ss)));
-	}
-
-	public static final String getTime2(Date d) {
-		long timers = d.getTime() / 1000L % 86400L;
-		long ss = timers % 60L;
-		long mm = timers / 60L % 60L;
-		long hh = timers / 3600L + 8;
-		return String.format("%s:%s:%s", zero(hh), zero(mm), zero(ss));
+		return Long.parseLong(getTime("%s%s%s", d));
 	}
 
 	public static final Date getNowDate() {
