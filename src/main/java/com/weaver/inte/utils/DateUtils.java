@@ -11,7 +11,7 @@ public class DateUtils {
 		long timers = d.getTime() / 1000;
 		long ss = timers % 60;
 		long mm = timers / 60 % 60;
-		long hh = timers % 86400 / 3600 + 8;
+		long hh = (timers % 86400 / 3600 + 8) % 24;
 		return String.format(pattern, zero(hh), zero(mm), zero(ss));
 	}
 
