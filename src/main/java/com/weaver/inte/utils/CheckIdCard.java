@@ -36,9 +36,7 @@ public class CheckIdCard {
 
     private static boolean cardCodeVerify(String cardcode) {
         int i = 0;
-        String r = "error";
-        String lastnumber = "";
-
+        String r = "";
         i += Integer.parseInt(cardcode.substring(0, 1)) * 7;
         i += Integer.parseInt(cardcode.substring(1, 2)) * 9;
         i += Integer.parseInt(cardcode.substring(2, 3)) * 10;
@@ -57,7 +55,7 @@ public class CheckIdCard {
         i += Integer.parseInt(cardcode.substring(15, 16)) * 4;
         i += Integer.parseInt(cardcode.substring(16, 17)) * 2;
         i = i % 11;
-        lastnumber = cardcode.substring(17, 18);
+        String lastnumber = cardcode.substring(17, 18);
         if (i == 0) { r = "1"; }
         if (i == 1) {  r = "0"; }
         if (i == 2) {  r = "x"; }
@@ -69,7 +67,7 @@ public class CheckIdCard {
         if (i == 8) { r = "4";  }
         if (i == 9) {  r = "3"; }
         if (i == 10) {  r = "2";  }
-        if (r.equals(lastnumber.toLowerCase())) {
+        if (r.equalsIgnoreCase(lastnumber)) {
             return true;
         }
         return false;
