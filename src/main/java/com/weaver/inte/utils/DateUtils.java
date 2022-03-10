@@ -7,11 +7,19 @@ import java.util.Date;
 
 public class DateUtils {
 
+	public static void main(String[] args) throws InterruptedException {
+		while (true) {
+			Date d = new Date();
+			System.out.println(d + "\t" + getTime("%s:%s:%s", d));
+			Thread.sleep(1000);
+		}
+	}
+
 	private static final String getTime(String pattern, Date d) {
 		long timers = d.getTime() / 1000;
 		long ss = timers % 60;
 		long mm = timers / 60 % 60;
-		long hh = (timers % 86400 / 3600 + 8) % 24;
+		long hh = (timers / 3600 + 8) % 24;
 		return String.format(pattern, zero(hh), zero(mm), zero(ss));
 	}
 
