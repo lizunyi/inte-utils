@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class CountDownGroup {
-    private List<BaseThread> threadList = new ArrayList<>();
+    private List<ParallThread> threadList = new ArrayList<>();
     private CountDownLatch latch;
     private Map<String, Object> cacheObjectMap = new HashMap<>();
 
-    public CountDownGroup addThread(BaseThread d) {
+    public CountDownGroup addThread(ParallThread d) {
         d.setCountDownGroup(this);
         threadList.add(d);
         return this;
@@ -30,7 +30,7 @@ public class CountDownGroup {
         if (latch == null) {
             latch = new CountDownLatch(threadList.size());
         }
-        for (BaseThread t : threadList) {
+        for (ParallThread t : threadList) {
             t.start();
         }
         try {
