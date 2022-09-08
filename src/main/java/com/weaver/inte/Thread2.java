@@ -1,8 +1,8 @@
 package com.weaver.inte;
 
-import com.weaver.inte.utils.BaseThread;
+import com.weaver.inte.utils.ParallThread;
 
-public class Thread2 extends BaseThread {
+public class Thread2 extends ParallThread {
     @Override
     protected void work() {
         try {

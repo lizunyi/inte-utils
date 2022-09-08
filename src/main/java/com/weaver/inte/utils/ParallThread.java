@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-public abstract class BaseThread extends Thread {
+public abstract class ParallThread extends Thread {
 
     private CountDownGroup countDownGroup;
 
