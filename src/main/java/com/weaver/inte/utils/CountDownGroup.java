@@ -52,7 +52,7 @@ public class CountDownGroup {
         latch.countDown();
     }
 
-    <T> T getObject(Class<?> c) {
+    <T> T getObject(Class<T> c) {
         String className = c.getName();
         Object obj = cacheObjectMap.get(className);
         if (obj != null) {

@@ -30,7 +30,7 @@ public abstract class ParallThread extends Thread {
         countDownGroup.countDown();
     }
 
-    protected <T> T getObject(Class<?> c) {
+    protected <T> T getObject(Class<T> c) {
         return countDownGroup.getObject(c);
     }
 }
