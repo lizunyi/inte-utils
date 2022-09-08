@@ -17,6 +17,7 @@ import java.util.stream.Stream;
  *
  */
 public class StringUtils {
+
 	public final static String empty = "";
 
 	public static String ifNull(Object obj, String defaultValue) {
@@ -188,60 +189,107 @@ public class StringUtils {
 	/***
 	 * XML->String
 	 */
-	public static void main(String[] args) throws Exception {
-		String xml = ReadWriteUtil.read("D://hotel-info.xml");
-//		System.out.println(getAttributeByTag(xml,"ReqType","roomTypeDescript"));
-		//取对象
-//		System.out.println(getStringByTags(xml,"ReqHotel"));
-		//取值
-		System.out.println("-----取值");
-		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelCode"));
-		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelName"));
-		System.out.println(getStringByTags(xml,"ReqHotel","HotelBaseInfo","HotelAddress"));
-		//多个标签取数组
-		System.out.println("-----多个标签取数组");
-		List<String> result = getArrayByTags(xml,"ReqHotel", "HotelTrafic", "TfcItem");
-		if(result !=null && result.size() > 0) {
-			for (String str : result) {
-				System.out.println(getStringByTags(str, "Destination"));
-			}
+	public static String getStringByTags(String xml, String... tag) {
+		Matcher mac = moreKey(tag).matcher(xml);
+		if (mac.find()) {
+			return mac.group(1);
 		}
-		//多个标签取 + 属性过滤 取数组
-		System.out.println("-----多个标签取 + 属性过滤 取数组");
-		result = getArrayByTagsFilterAttribute(xml,"phoneType=\"NationalFree\"","HotelBaseInfo", "ContactPhone", "PhoneNo");
-		if(result !=null && result.size() > 0) {
-			for (String str : result) {
-				System.out.println(getStringByTags(str, "PhoneNo"));
-			}
-		}
-//		String xml = ReadWriteUtil.read("D://hotel-room-price.xml");
-//		List<String> result = getArrayByTagsFilterAttribute(xml, "", "ReqRooms", "ReqDate");
-//		if (result != null && result.size() > 0) {
-//			for (String str : result) {
-//				List<String> arr = getArrayByTagsFilterAttribute(str, "roomTypeCode=\"2\"", "ReqDate", "ReqRoom");
-//				if (arr != null && arr.size() > 0) {
-//					System.out.println(arr.get(0));
-//					String roomCount = getStringByTags(arr.get(0), "RoomCount");
-//				}
-//			}
-//		}
+		return empty;
 	}
 
+	public static List<String> getArrayByTags(String xml, String... tag) {
+		List<String> result = getArrayByTags(xml, false, tag);
+		return result;
+	}
+
+	public static List<String> getArrayByTags(String xml, boolean withTag, String... tag) {
+		List<String> result = new ArrayList<>();
+		String[] newTag = null;
+		if (tag.length == 1) {
+			newTag = tag;
+		} else {
+			newTag = Arrays.copyOfRange(tag, 0, tag.length - 1);
+		}
+		Matcher mac = moreKey(newTag).matcher(xml);
+		String newXMl = empty;
+		if (mac.find()) {
+			newXMl = mac.group(1);
+		}
+		String listTag = tag[tag.length - 1];
+		if (isNotNull(newXMl)) {
+			mac = singleNoNestingKey(listTag).matcher(newXMl);
+			while (mac.find()) {
+				if (withTag) {
+					result.add(mac.group(0));
+				} else {
+					result.add(mac.group(1));
+				}
+			}
+		}
+		return result;
+	}
+
+	public static String getStringByTag(String xml, String tag) {
+		Matcher mac = singleKey(tag).matcher(xml);
+		if (mac.find()) {
+			return mac.group(1);
+		}
+		return empty;
+	}
+
+	public static String getAttributeByTag(String xml, String tag, String attribute) {
+		Matcher mac = singleKeyByAttribute(tag, attribute).matcher(xml);
+		if (mac.find()) {
+			return mac.group(1);
+		}
+		return empty;
+	}
+
+	private static Pattern singleKeyByAttribute(String tag, String attribute) {
+		return Pattern.compile(String.format("<%s[\\s\\S]*?%s=\"([\\s\\S]*?)\"[\\s\\S]*?>", tag, attribute));
+	}
+
+	private static Pattern singleNoNestingKey(String tag) {
+		return Pattern.compile(String.format("<%s[^>]*>([\\s\\S]*?)</%s>", tag, tag, tag));
+	}
+
+	private static Pattern singleNoNestingKey(String attribute, String tag) {
+		return Pattern.compile(String.format("<%s[^>]*(?=%s)[^>]*>([\\s\\S]*?)</%s>", tag, attribute, tag));
+	}
 
 	private static Pattern singleKey(String tag) {
 		return Pattern.compile(String.format("<%s[^>]*>([\\s\\S]*)</%s>", tag, tag));
 	}
 
-	private static Pattern singleNoNestingKey(String tag) {
-		return Pattern.compile(String.format("<%s[^>]*>(((?!<%s>)[\\s\\S])*)</%s>", tag, tag, tag));
+	public static List<String> getArrayByTagsFilterAttribute(String xml, String attribute, boolean isWithTag, String... tag) {
+		String[] newTag = null;
+		if (tag.length == 1) {
+			newTag = tag;
+		} else {
+			newTag = Arrays.copyOfRange(tag, 0, tag.length - 1);
+		}
+		Matcher mac = moreKey(newTag).matcher(xml);
+		String newXMl = empty;
+		if (mac.find()) {
+			newXMl = mac.group(1);
+		}
+		String listTag = tag[tag.length - 1];
+		List<String> result = new ArrayList<>();
+		if (isNotNull(newXMl)) {
+			mac = singleNoNestingKey(attribute, listTag).matcher(newXMl);
+			while (mac.find()) {
+				if (isWithTag) {
+					result.add(mac.group(0));
+				} else {
+					result.add(mac.group(1));
+				}
+			}
+		}
+		return result;
 	}
 
-	private static Pattern singleNoNestingKey(String attribute, String tag) {
-		return Pattern.compile(String.format("<%s[^>]*(?=%s)[^>]*>(((?!</%s>)[\\s\\S])*)</%s>", tag, attribute, tag, tag));
-	}
-
-	private static Pattern singleKeyByAttribute(String tag, String attribute) {
-		return Pattern.compile(String.format("<%s[\\s\\S]*?%s=\"([\\s\\S]*?)\"[\\s\\S]*?>", tag, attribute));
+	public static List<String> getArrayByTagsFilterAttribute(String xml, String attribute, String... tag) {
+		return getArrayByTagsFilterAttribute(xml, attribute, false, tag);
 	}
 
 	private static Pattern moreKey(String... tags) {
@@ -261,72 +309,5 @@ public class StringUtils {
 			}
 		}
 		return Pattern.compile(sb.toString());
-	}
-
-	public static String getStringByTags(String xml, String... tag) {
-		Matcher mac = null;
-		if (tag != null && tag.length == 1) {
-			mac = singleKey(tag[0]).matcher(xml);
-		} else {
-			mac = moreKey(tag).matcher(xml);
-		}
-		if (mac.find()) {
-			return mac.group(1);
-		}
-		return empty;
-	}
-
-	public static List<String> getArrayByTags(String xml, String... tag) {
-		String[] newTag = null;
-		if (tag.length == 1) {
-			newTag = tag;
-		} else {
-			newTag = Arrays.copyOfRange(tag, 0, tag.length - 1);
-		}
-		Matcher mac = moreKey(newTag).matcher(xml);
-		String newXMl = empty;
-		if (mac.find()) {
-			newXMl = mac.group(1);
-		}
-		String listTag = tag[tag.length - 1];
-		List<String> result = new ArrayList<>();
-		if (StringUtils.isNotNull(newXMl)) {
-			mac = singleNoNestingKey(listTag).matcher(newXMl);
-			while (mac.find()) {
-				result.add(mac.group(0));
-			}
-		}
-		return result;
-	}
-
-	public static String getAttributeByTag(String xml, String tag, String attribute) {
-		Matcher mac = singleKeyByAttribute(tag, attribute).matcher(xml);
-		if (mac.find()) {
-			return mac.group(1);
-		}
-		return empty;
-	}
-
-	public static List<String> getArrayByTagsFilterAttribute(String xml, String attribute, String... tag) {
-		String[] newTag = null;
-		if (tag.length == 1) {
-			newTag = tag;
-		} else {
-			newTag = Arrays.copyOfRange(tag, 0, tag.length - 1);
-		}
-		Matcher mac = moreKey(newTag).matcher(xml);
-		String newXMl = empty;
-		if (mac.find()) {
-			newXMl = mac.group(1);
-		}
-		String listTag = tag[tag.length - 1];
-		List<String> result = new ArrayList<>();
-		if (StringUtils.isNotNull(newXMl)) {
-			mac = singleNoNestingKey(attribute, listTag).matcher(newXMl);
-			while (mac.find()) {
-				result.add(mac.group(0));
-			}
-		}
-		return result;
 	}
 }
