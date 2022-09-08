@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class CountDownGroup {
+
     private List<ParallThread> threadList = new ArrayList<>();
     private CountDownLatch latch;
     private Map<String, Object> cacheObjectMap = new HashMap<>();
@@ -59,5 +60,9 @@ public class CountDownGroup {
             return (T) obj;
         }
         return null;
+    }
+
+    void error(Exception e) throws Exception {
+        throw e;
     }
 }

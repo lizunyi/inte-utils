@@ -13,7 +13,7 @@ public abstract class ParallThread extends Thread {
         this.countDownGroup = countDownGroup;
     }
 
-    protected abstract void work();
+    protected abstract void work() throws Exception;
 
     @Override
     public void run() {
