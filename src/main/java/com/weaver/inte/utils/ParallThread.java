@@ -1,11 +1,9 @@
 package com.weaver.inte.utils;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public abstract class ParallThread extends Thread {
+
 
     private CountDownGroup countDownGroup;
 
