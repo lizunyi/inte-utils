@@ -2,11 +2,11 @@ package com.weaver.inte.utils;
 
 
 
-public abstract class ParallThread extends Thread {
+public abstract class WeaveThread extends Thread {
 
-    private ThreadWeave threadWeave;
+    private ThreadWeaveCore threadWeave;
 
-    public void setThreadWeave(ThreadWeave threadWeave) {
+    public void setThreadWeaveCore(ThreadWeaveCore threadWeave) {
         this.threadWeave = threadWeave;
     }
 

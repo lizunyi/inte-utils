@@ -1,8 +1,8 @@
 package com.weaver.inte;
 
-import com.weaver.inte.utils.ParallThread;
+import com.weaver.inte.utils.WeaveThread;
 
-public class Thread1 extends ParallThread {
+public class Thread1 extends WeaveThread {
     @Override
     protected void work() throws Exception {
         Thread.sleep(2000);

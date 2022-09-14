@@ -1,6 +1,6 @@
 package com.weaver.inte;
 
-import com.weaver.inte.utils.ThreadWeave;
+import com.weaver.inte.utils.ThreadWeaveCore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ public class Test {
     public static void main(String[] args) {
         System.out.println(null == null);
         System.out.println("开始");
-        ThreadWeave a = new ThreadWeave()
+        ThreadWeaveCore a = new ThreadWeaveCore()
                 .group(new Thread2(), new Thread1())
                 .group(new Thread2())
                 .addObject(new Example("你好"))

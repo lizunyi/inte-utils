@@ -10,20 +10,20 @@ import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ThreadWeave {
-    private List<List<ParallThread>> threadList = new ArrayList<>();
+public class ThreadWeaveCore {
+    private List<List<WeaveThread>> threadList = new ArrayList<>();
     private CountDownLatch latch;
     private Map<String, Object> cacheObjectMap = new HashMap<String, Object>();
 
-    public ThreadWeave group(ParallThread... threads) {
-        for (ParallThread d : threads) {
-            d.setThreadWeave(this);
+    public ThreadWeaveCore group(WeaveThread... threads) {
+        for (WeaveThread d : threads) {
+            d.setThreadWeaveCore(this);
         }
         threadList.add(Stream.of(threads).collect(Collectors.toList()));
         return this;
     }
 
-    public ThreadWeave addObject(Object o) {
+    public ThreadWeaveCore addObject(Object o) {
         String className = o.getClass().getName();
         if (className.contains("$Proxy")) {
             cacheObjectMap.put(o.getClass().getInterfaces()[0].getName(), o);
@@ -33,18 +33,18 @@ public class ThreadWeave {
         return this;
     }
 
-    public ThreadWeave execute() {
+    public ThreadWeaveCore execute() {
         if (threadList.isEmpty()) {
             return this;
         }
         if (latch == null) {
             latch = new CountDownLatch(threadList.size());
         }
-        for (List<ParallThread> t : threadList) {
+        for (List<WeaveThread> t : threadList) {
             new Thread(() -> {
                 try {
                     for (int i = 0; i < t.size(); i++) {
-                        ParallThread a = t.get(i);
+                        WeaveThread a = t.get(i);
                         try {
                             a.work();
                         } catch (Exception e) {
