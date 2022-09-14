@@ -10,25 +10,20 @@ import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CountDownGroup {
+public class ThreadWeave {
     private List<List<ParallThread>> threadList = new ArrayList<>();
     private CountDownLatch latch;
     private Map<String, Object> cacheObjectMap = new HashMap<String, Object>();
 
-    public CountDownGroup addThread(ParallThread d) {
-        threadGroup(d);
-        return this;
-    }
-
-    public CountDownGroup threadGroup(ParallThread... threads) {
+    public ThreadWeave group(ParallThread... threads) {
         for (ParallThread d : threads) {
-            d.setCountDownGroup(this);
+            d.setThreadWeave(this);
         }
         threadList.add(Stream.of(threads).collect(Collectors.toList()));
         return this;
     }
 
-    public CountDownGroup addObject(Object o) {
+    public ThreadWeave addObject(Object o) {
         String className = o.getClass().getName();
         if (className.contains("$Proxy")) {
             cacheObjectMap.put(o.getClass().getInterfaces()[0].getName(), o);
@@ -38,7 +33,7 @@ public class CountDownGroup {
         return this;
     }
 
-    public CountDownGroup execute() {
+    public ThreadWeave execute() {
         if (threadList.isEmpty()) {
             return this;
         }
@@ -46,10 +41,8 @@ public class CountDownGroup {
             latch = new CountDownLatch(threadList.size());
         }
         for (List<ParallThread> t : threadList) {
-            if (t.size() == 1) {
-                t.get(0).start();
-            } else {
-                new Thread(() -> {
+            new Thread(() -> {
+                try {
                     for (int i = 0; i < t.size(); i++) {
                         ParallThread a = t.get(i);
                         try {
@@ -58,9 +51,12 @@ public class CountDownGroup {
                             e.printStackTrace();
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
                     latch.countDown();
-                }).start();
-            }
+                }
+            }).start();
         }
         try {
             latch.await();
@@ -89,5 +85,4 @@ public class CountDownGroup {
         }
         return null;
     }
-
 }
