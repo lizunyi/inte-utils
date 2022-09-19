@@ -10,12 +10,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ThreadWeaveCore {
+public class WeaveThreadCore {
     private List<List<WeaveThread>> threadList = new ArrayList<>();
     private CountDownLatch latch;
     private Map<String, Object> cacheObjectMap = new HashMap<String, Object>();
 
-    public ThreadWeaveCore group(WeaveThread... threads) {
+    public WeaveThreadCore group(WeaveThread... threads) {
         for (WeaveThread d : threads) {
             d.setThreadWeaveCore(this);
         }
@@ -23,7 +23,7 @@ public class ThreadWeaveCore {
         return this;
     }
 
-    public ThreadWeaveCore addObject(Object o) {
+    public WeaveThreadCore addObject(Object o) {
         String className = o.getClass().getName();
         if (className.contains("$Proxy")) {
             cacheObjectMap.put(o.getClass().getInterfaces()[0].getName(), o);
@@ -33,7 +33,7 @@ public class ThreadWeaveCore {
         return this;
     }
 
-    public ThreadWeaveCore execute() {
+    public WeaveThreadCore execute() {
         if (threadList.isEmpty()) {
             return this;
         }

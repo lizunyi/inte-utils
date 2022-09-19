@@ -1,18 +1,17 @@
 package com.weaver.inte.utils;
 
 
-
 public abstract class WeaveThread extends Thread {
 
-    private ThreadWeaveCore threadWeave;
+    private WeaveThreadCore weaveThreadCore;
 
-    public void setThreadWeaveCore(ThreadWeaveCore threadWeave) {
-        this.threadWeave = threadWeave;
+    public void setThreadWeaveCore(WeaveThreadCore weaveThreadCore) {
+        this.weaveThreadCore = weaveThreadCore;
     }
 
     protected abstract void work() throws Exception;
 
     protected <T> T getObject(Class<T> c) {
-        return threadWeave.getObject(c);
+        return weaveThreadCore.getObject(c);
     }
 }
