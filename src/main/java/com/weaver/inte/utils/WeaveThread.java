@@ -14,4 +14,8 @@ public abstract class WeaveThread extends Thread {
     protected <T> T getObject(Class<T> c) {
         return weaveThreadCore.getObject(c);
     }
+
+    protected <T> T getObjectByAlias(String alias) {
+        return weaveThreadCore.getObject(alias);
+    }
 }
