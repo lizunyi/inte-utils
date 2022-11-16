@@ -19,6 +19,34 @@ public class StringUtils {
 
     public final static String empty = "";
 
+    /***
+     * 去除前后的符号
+     * @param str 字符串
+     * @param fuhao 要去除的符号
+     * @return
+     */
+    public static String trim(String str, String fuhao) {
+        str = str.replaceAll("^" + fuhao + "|" + fuhao + "$", "");
+        return str;
+    }
+
+    public static String trimAfter(String str, String fuhao) {
+        str = str.replaceAll(fuhao + "$", "");
+        return str;
+    }
+
+    public static String trimBefore(String str, String fuhao) {
+        str = str.replaceAll("^" + fuhao, "");
+        return str;
+    }
+
+    public static String ifNullOrElse(String arg, String other, String defaultValue) {
+        if (isNull(arg) || arg.equalsIgnoreCase(other)) {
+            return defaultValue;
+        }
+        return arg.trim();
+    }
+
     public static boolean isNull(Object obj) {
         if (obj == null || empty.equals(obj.toString().trim())) {
             return true;
