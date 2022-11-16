@@ -65,7 +65,7 @@ public class JsonTest {
                 "  }\n" +
                 "}";
         JSONObject json = JSONObject.parseObject(jsonStr);
-        //如果仅仅从demo.json中取cabins.discountRate
+        //如果仅仅从json中取cabin.discountRate
         System.out.println(StringUtils.getBigDecimalByKeys(json, "data", "flight", "cabin", "discountRate"));
         /***
          * 在使用上如果对某个对象多次取值，建议缩小取值的深度，比如 要获取cabin下的
