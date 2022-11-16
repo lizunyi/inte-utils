@@ -92,10 +92,6 @@ public class StringUtils {
 		return !isNull(obj);
 	}
 
-	public static boolean isempty(Object str) {
-		return (str == null || empty.equals(str));
-	}
-
 	/***
 	 * JSON->String
 	 */
