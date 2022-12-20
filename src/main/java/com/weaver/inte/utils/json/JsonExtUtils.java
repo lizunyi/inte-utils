@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.weaver.inte.utils.ReadWriteUtils;
+import com.weaver.inte.utils.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: saps.weaver
@@ -18,11 +18,56 @@ public class JsonExtUtils {
 
     public static void main(String[] args) throws Exception {
         String text = ReadWriteUtils.read("D://demo.txt");
-        Map<String, String> keys = compare(JSONObject.parseObject(text));
-        System.out.println(JSON.toJSONString(keys));
+//        Map<String, String> keys = strcut(JSONObject.parseObject(text));
+//        System.out.println(JSON.toJSONString(keys));
+        String s = "$.data..dstCity";
+//        String s = "$.nihao.al";
+        List<String> vals = getValueByJsonPath(JSONObject.parseObject(text), s);
+        System.out.println(JSON.toJSONString(vals));
     }
 
-    public static Map<String, String> compare(Object res) {
+    /***
+     * 根据JSON路径获取字符串
+     * @param res
+     * @param path $.nihao.al
+     */
+    public static List<String> getValueByJsonPath(JSONObject res, String path) {
+        List<String> vals = new ArrayList<>();
+        String[] keys = path.replaceAll("^\\$\\.", "").split("\\.\\.");
+        if (keys.length == 1) {
+            vals.add(StringUtils.getStringByKeys(res, keys[0].split("\\.")));
+        } else {
+            JSONArray arr = StringUtils.getArrayByKeys(res, keys[0]);
+            if (arr != null) {
+                cycleGetValueByJsonPath(arr, Arrays.copyOfRange(keys, 1, keys.length), vals);
+            }
+        }
+        return vals;
+    }
+
+    private static void cycleGetValueByJsonPath(JSONArray res, String[] keys, List<String> vals) {
+        for (int i = 0; i < res.size(); i++) {
+            JSONObject json = res.getJSONObject(i);
+            for (int j = 0; j < keys.length; j++) {
+                if (j == keys.length - 1) {
+                    String val = StringUtils.getStringByJson(json, keys[j]);
+                    vals.add(val);
+                } else {
+                    JSONArray arr = StringUtils.getArrayByKeys(json, keys[j]);
+                    if (arr != null) {
+                        cycleGetValueByJsonPath(arr, Arrays.copyOfRange(keys, j + 1, keys.length), vals);
+                    }
+                }
+            }
+        }
+    }
+
+    /***
+     * 获取JSON的数据结构
+     * @param res
+     * @return
+     */
+    public static Map<String, String> strcut(Object res) {
         Map<String, String> structMap = new HashMap<>();
         JsonDataType jsonDataType = getJsonDataType(res);
         if (jsonDataType == JsonDataType.object_type) {
