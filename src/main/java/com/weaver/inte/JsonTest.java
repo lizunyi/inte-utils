@@ -1,7 +1,8 @@
 package com.weaver.inte;
 
 import com.alibaba.fastjson.JSONObject;
-import com.weaver.inte.utils.StringUtils;
+import com.weaver.inte.utils.StringExtUtils;
+import com.weaver.inte.utils.json.JsonExtUtils;
 
 /**
  * @author: saps.weaver
@@ -18,18 +19,18 @@ public class JsonTest {
 
         //字符串操作 示例
         String str = null;
-        System.out.println(StringUtils.isNull(str));//判断是否为空，入参Object类型
-        System.out.println(StringUtils.ifNull(str));//判断如果为空，则返回空字符串
-        System.out.println(StringUtils.ifNull(str, "Hello"));//判断如果为空，则返回默认的字符串
+        System.out.println(StringExtUtils.isNull(str));//判断是否为空，入参Object类型
+        System.out.println(StringExtUtils.ifNull(str));//判断如果为空，则返回空字符串
+        System.out.println(StringExtUtils.ifNull(str, "Hello"));//判断如果为空，则返回默认的字符串
         str = "";
-        System.out.println(StringUtils.isNull(str));
+        System.out.println(StringExtUtils.isNull(str));
         str = "a";
-        System.out.println(StringUtils.isNull(str));
-        System.out.println(StringUtils.ifNull(str, "Hello"));
+        System.out.println(StringExtUtils.isNull(str));
+        System.out.println(StringExtUtils.ifNull(str, "Hello"));
         str = "11";
-        System.out.println(StringUtils.ifBigDecimalNull(str));//如果字符串不为空，则转为BigDecimal对象
-        System.out.println(StringUtils.ifLongNull(str));//如果字符串不为空，则转为Long对象
-        System.out.println(StringUtils.ifDoubleNull(str));//如果字符串不为空，则转为Double对象
+        System.out.println(StringExtUtils.ifBigDecimalNull(str));//如果字符串不为空，则转为BigDecimal对象
+        System.out.println(StringExtUtils.ifLongNull(str));//如果字符串不为空，则转为Long对象
+        System.out.println(StringExtUtils.ifDoubleNull(str));//如果字符串不为空，则转为Double对象
 
         //操作Json示例
         String jsonStr = "{\n" +
@@ -66,18 +67,18 @@ public class JsonTest {
                 "}";
         JSONObject json = JSONObject.parseObject(jsonStr);
         //如果仅仅从json中取cabin.discountRate
-        System.out.println(StringUtils.getBigDecimalByKeys(json, "data", "flight", "cabin", "discountRate"));
+        System.out.println(JsonExtUtils.getBigDecimalByKeys(json, "data", "flight", "cabin", "discountRate"));
         /***
          * 在使用上如果对某个对象多次取值，建议缩小取值的深度，比如 要获取cabin下的
          * supplierName、discountRate、cost、supplierState、lastSeat、basicCabinType 构建新的对象，可以取出 cabin 对象，然后从cabin对象中逐步取出各个值以减少不必要的循环开销
          */
-        JSONObject cabinJson = StringUtils.getObjectByKeys(json, "data", "flight", "cabin");
-        System.out.println(StringUtils.getStringByJson(cabinJson, "supplierName"));
-        System.out.println(StringUtils.getBigDecimalByJson(cabinJson, "discountRate"));
-        System.out.println(StringUtils.getBigDecimalByJson(cabinJson, "cost"));
-        System.out.println(StringUtils.getStringByJson(cabinJson, "supplierState"));
-        System.out.println(StringUtils.getStringByJson(cabinJson, "lastSeat"));
-        System.out.println(StringUtils.getStringByJson(cabinJson, "basicCabinType"));
+        JSONObject cabinJson = JsonExtUtils.getObjectByKeys(json, "data", "flight", "cabin");
+        System.out.println(JsonExtUtils.getStringByJson(cabinJson, "supplierName"));
+        System.out.println(JsonExtUtils.getBigDecimalByJson(cabinJson, "discountRate"));
+        System.out.println(JsonExtUtils.getBigDecimalByJson(cabinJson, "cost"));
+        System.out.println(JsonExtUtils.getStringByJson(cabinJson, "supplierState"));
+        System.out.println(JsonExtUtils.getStringByJson(cabinJson, "lastSeat"));
+        System.out.println(JsonExtUtils.getStringByJson(cabinJson, "basicCabinType"));
 
     }
 }

@@ -4,8 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.weaver.inte.utils.ReadWriteUtils;
-import com.weaver.inte.utils.StringUtils;
+import com.weaver.inte.utils.StringExtUtils;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -35,9 +36,9 @@ public class JsonExtUtils {
         List<String> vals = new ArrayList<>();
         String[] keys = path.replaceAll("^\\$\\.", "").split("\\.\\.");
         if (keys.length == 1) {
-            vals.add(StringUtils.getStringByKeys(res, keys[0].split("\\.")));
+            vals.add(getStringByKeys(res, keys[0].split("\\.")));
         } else {
-            JSONArray arr = StringUtils.getArrayByKeys(res, keys[0]);
+            JSONArray arr = getArrayByKeys(res, keys[0]);
             if (arr != null) {
                 cycleGetValueByJsonPath(arr, Arrays.copyOfRange(keys, 1, keys.length), vals);
             }
@@ -50,10 +51,10 @@ public class JsonExtUtils {
             JSONObject json = res.getJSONObject(i);
             for (int j = 0; j < keys.length; j++) {
                 if (j == keys.length - 1) {
-                    String val = StringUtils.getStringByJson(json, keys[j]);
+                    String val = getStringByJson(json, keys[j]);
                     vals.add(val);
                 } else {
-                    JSONArray arr = StringUtils.getArrayByKeys(json, keys[j]);
+                    JSONArray arr = getArrayByKeys(json, keys[j]);
                     if (arr != null) {
                         cycleGetValueByJsonPath(arr, Arrays.copyOfRange(keys, j + 1, keys.length), vals);
                     }
@@ -113,5 +114,121 @@ public class JsonExtUtils {
             typeName = obj.getClass().getSimpleName().toLowerCase();
         }
         return JsonDataType.get(typeName);
+    }
+
+
+    /***
+     * JSON->String
+     */
+    public static String getStringByJson(JSONObject json, String key) {
+        return StringExtUtils.ifNull(json.get(key));
+    }
+
+    public static Integer getIntegerByJson(JSONObject json, String key) {
+        return StringExtUtils.ifIntegerNull(json.get(key));
+    }
+
+    public static BigDecimal getBigDecimalByJson(JSONObject json, String key) {
+        return StringExtUtils.ifBigDecimalNull(json.get(key));
+    }
+
+    public static Long getLongByJson(JSONObject json, String key) {
+        return StringExtUtils.ifLongNull(json.get(key));
+    }
+
+    public static String getStringByKeys(JSONObject json, String... keys) {
+        JSONObject commResult = jsonCore(json, keys);
+        if (commResult != null) {
+            String key = keys[keys.length - 1];
+            return StringExtUtils.ifNull(commResult.get(key));
+        }
+        return StringExtUtils.empty;
+    }
+
+
+    public static Integer getIntegerByKeys(JSONObject json, String... keys) {
+        JSONObject commResult = jsonCore(json, keys);
+        if (commResult != null) {
+            String key = keys[keys.length - 1];
+            return StringExtUtils.ifIntegerNull(commResult.get(key));
+        }
+        return null;
+    }
+
+    public static BigDecimal getBigDecimalByKeys(JSONObject json, String... keys) {
+        JSONObject commResult = jsonCore(json, keys);
+        if (commResult != null) {
+            String key = keys[keys.length - 1];
+            return StringExtUtils.ifBigDecimalNull(commResult.get(key));
+        }
+        return null;
+    }
+
+    public static Long getLongByKeys(JSONObject json, String... keys) {
+        JSONObject commResult = jsonCore(json, keys);
+        if (commResult != null) {
+            String key = keys[keys.length - 1];
+            return StringExtUtils.ifLongNull(commResult.get(key));
+        }
+        return null;
+    }
+
+    public static JSONObject getObjectByKeys(JSONObject json, String... keys) {
+        JSONObject commResult = jsonCore(json, keys);
+        if (commResult != null) {
+            String key = keys[keys.length - 1];
+            return commResult.getJSONObject(key);
+        }
+        return null;
+    }
+
+    public static JSONArray getArrayByKeys(JSONObject json, String... keys) {
+        JSONObject commResult = jsonCore(json, keys);
+        if (commResult != null) {
+            String key = keys[keys.length - 1];
+            return commResult.getJSONArray(key);
+        }
+        return null;
+    }
+
+    public static String getStringByKeysInArrayFirst(JSONObject json, String... keys) {
+        JSONArray array = getArrayByKeys(json, Arrays.copyOf(keys, keys.length - 1));
+        if (array != null && array.size() > 0) {
+            JSONObject object = array.getJSONObject(0);
+            String key = keys[keys.length - 1];
+            return getStringByJson(object, key);
+        }
+        return StringExtUtils.empty;
+    }
+
+    public static JSONObject getObjectByKeysInArrayFirst(JSONObject json, String... keys) {
+        JSONArray array = getArrayByKeys(json, keys);
+        if (array != null && array.size() > 0) {
+            JSONObject object = array.getJSONObject(0);
+            return object;
+        }
+        return null;
+    }
+
+    /***
+     * 从JSONObject 中提取字符串核心方法
+     * @param json
+     * @param keys
+     * @return
+     */
+    private static JSONObject jsonCore(JSONObject json, String... keys) {
+        for (int i = 0; i < keys.length; i++) {
+            String key = keys[i];
+            if (json != null && json.containsKey(key) && json.get(key) != null) {
+                if (i == keys.length - 1) {
+                    return json;
+                } else {
+                    json = json.getJSONObject(key);
+                }
+            } else {
+                break;
+            }
+        }
+        return null;
     }
 }

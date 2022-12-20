@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateUtils {
+public class DateExtUtils {
 
     public final static String fmtDateTime = "yyyy-MM-dd HH:mm:ss";
     public final static String fmtDateMinutes = "yyyy-MM-dd HH:mm";
