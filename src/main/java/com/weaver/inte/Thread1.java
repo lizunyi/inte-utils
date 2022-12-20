@@ -1,6 +1,6 @@
 package com.weaver.inte;
 
-import com.weaver.inte.utils.WeaveThread;
+import com.weaver.inte.utils.thread.WeaveThread;
 
 import java.util.Date;
 import java.util.Map;

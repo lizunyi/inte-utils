@@ -8,7 +8,7 @@ import java.security.MessageDigest;
  * @date:2020年4月28日 上午10:31:48
  * @version v1.0
  */
-public class MD5Util {
+public class MD5Utils {
 
 	public static final String md5(String info) throws Exception {
 		return md5(info.getBytes("UTF-8"));
@@ -17,7 +17,7 @@ public class MD5Util {
 	public static final String md5(byte[] bytes) throws Exception {
 		MessageDigest md5 = MessageDigest.getInstance("MD5");
 		byte[] md5Array = null;
-		synchronized (MD5Util.class) {
+		synchronized (MD5Utils.class) {
 			md5.update(bytes);
 			md5Array = md5.digest();
 		}

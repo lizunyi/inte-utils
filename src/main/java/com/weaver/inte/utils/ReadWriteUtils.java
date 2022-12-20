@@ -18,7 +18,7 @@ import java.io.InputStream;
  * @since JDK
  * 
  */
-public class ReadWriteUtil {
+public class ReadWriteUtils {
 
 	/**
 	 * 根据流读取内容

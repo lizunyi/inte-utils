@@ -1,4 +1,4 @@
-package com.weaver.inte.utils;
+package com.weaver.inte.utils.thread;
 
 
 public abstract class WeaveThread extends Thread {

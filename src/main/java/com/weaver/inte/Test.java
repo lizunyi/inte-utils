@@ -1,6 +1,6 @@
 package com.weaver.inte;
 
-import com.weaver.inte.utils.WeaveThreadCore;
+import com.weaver.inte.utils.thread.WeaveThreadCore;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
