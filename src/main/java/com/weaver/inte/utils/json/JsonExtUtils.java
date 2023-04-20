@@ -19,12 +19,12 @@ public class JsonExtUtils {
 
     public static void main(String[] args) throws Exception {
         String text = ReadWriteUtils.read("D://demo.txt");
-//        Map<String, String> keys = strcut(JSONObject.parseObject(text));
-//        System.out.println(JSON.toJSONString(keys));
-        String s = "$.data..dstCity";
+        Map<String, String> keys = strcut(JSONObject.parseObject(text));
+        System.out.println(JSON.toJSONString(keys));
+//        String s = "$.data..dstCity";
 //        String s = "$.nihao.al";
-        List<String> vals = getValueByJsonPath(JSONObject.parseObject(text), s);
-        System.out.println(JSON.toJSONString(vals));
+//        List<String> vals = getValueByJsonPath(JSONObject.parseObject(text), s);
+//        System.out.println(JSON.toJSONString(vals));
     }
 
     /***
